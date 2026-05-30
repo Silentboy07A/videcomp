@@ -42,6 +42,19 @@ def ingest_videos(data: IngestRequest):
     global youtube_metadata
     global instagram_metadata
 
+    if (
+        "youtube.com" not in data.youtube_url
+        and
+        "youtu.be" not in data.youtube_url
+    ):
+        return {
+            "error": "Invalid YouTube URL"
+        }
+
+    if "instagram.com" not in data.instagram_url:
+        return {
+            "error": "Invalid Instagram URL"
+        }
     youtube_metadata = get_video_metadata(
         data.youtube_url
     )
