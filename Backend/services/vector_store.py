@@ -14,15 +14,21 @@ def create_collection():
         )
     )
 
-def store_chunks(chunks, embeddings):
+def store_chunks(chunks, embeddings, video_id):
     points = []
 
-    for idx, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
+    for idx, (chunk, embedding) in enumerate(
+        zip(chunks, embeddings)
+    ):
         points.append(
             PointStruct(
-                id=idx,
+                id=abs(hash(f"{video_id}_{idx}")) % 1000000000,
                 vector=embedding.tolist(),
-                payload={"text": chunk}
+                payload={
+                    "text": chunk,
+                    "video_id": video_id,
+                    "chunk_id": idx
+                }
             )
         )
 
