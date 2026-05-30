@@ -35,5 +35,3 @@ def get_instagram_metadata(url):
         "upload_date": info.get("upload_date"),
         "engagement_rate": engagement_rate
     }
-    print("\nDEBUG INSTAGRAM KEYS:")
-print(info.keys())

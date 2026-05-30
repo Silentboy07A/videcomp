@@ -1,9 +1,17 @@
 from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams, PointStruct
+from qdrant_client.models import (
+    Distance,
+    VectorParams,
+    PointStruct,
+    Filter,
+    FieldCondition,
+    MatchValue
+)
 
 client = QdrantClient(":memory:")
 
 COLLECTION_NAME = "video_chunks"
+
 
 def create_collection():
     client.recreate_collection(
@@ -14,12 +22,15 @@ def create_collection():
         )
     )
 
+
 def store_chunks(chunks, embeddings, video_id):
+
     points = []
 
     for idx, (chunk, embedding) in enumerate(
         zip(chunks, embeddings)
     ):
+
         points.append(
             PointStruct(
                 id=abs(hash(f"{video_id}_{idx}")) % 1000000000,
@@ -37,9 +48,34 @@ def store_chunks(chunks, embeddings, video_id):
         points=points
     )
 
-def search_chunks(query_embedding, limit=3):
+
+def search_chunks(query_embedding, limit=10):
+
     return client.search(
         collection_name=COLLECTION_NAME,
         query_vector=query_embedding.tolist(),
+        limit=limit
+    )
+
+
+def search_chunks_by_video(
+    query_embedding,
+    video_id,
+    limit=5
+):
+
+    return client.search(
+        collection_name=COLLECTION_NAME,
+        query_vector=query_embedding.tolist(),
+        query_filter=Filter(
+            must=[
+                FieldCondition(
+                    key="video_id",
+                    match=MatchValue(
+                        value=video_id
+                    )
+                )
+            ]
+        ),
         limit=limit
     )
