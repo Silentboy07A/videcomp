@@ -3,7 +3,7 @@ from services.chunking import chunk_text
 from services.embedding_service import create_embeddings
 from services.vector_store import create_collection, store_chunks
 from services.retrival_service import retrive_context
-from services.llm_service import generate_answer
+from services.langchain_rag import generate_rag_answer
 
 url = input("Enter YouTube URL: ")
 
@@ -31,7 +31,10 @@ context = "\n".join(
     [result.payload["text"] for result in results]
 )
 
-answer = generate_answer(question, context)
+answer = generate_rag_answer(
+    question,
+    context
+)
 
 print("\nAnswer:\n")
 print(answer)
