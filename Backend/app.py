@@ -7,7 +7,6 @@ from services.instagram_ingestion import get_instagram_transcript
 from services.chunking import chunk_text
 from services.embedding_service import create_embeddings
 from services.vector_store import create_collection, store_chunks
-from services.retrival_service import retrive_context
 from services.langchain_rag import generate_rag_answer
 
 from youtube_metadata import get_video_metadata
@@ -17,6 +16,8 @@ app = FastAPI()
 
 youtube_metadata = {}
 instagram_metadata = {}
+
+chat_history = []
 
 
 class IngestRequest(BaseModel):
@@ -92,12 +93,16 @@ def ingest_videos(data: IngestRequest):
         "youtube_chunks": len(youtube_chunks),
         "instagram_chunks": len(instagram_chunks)
     }
+
+
 @app.post("/ask")
 def ask_question(data: QuestionRequest):
 
     from services.retrival_service import (
         retrieve_context_by_video
     )
+
+    global chat_history
 
     youtube_results = retrieve_context_by_video(
         data.question,
@@ -123,7 +128,18 @@ def ask_question(data: QuestionRequest):
         ]
     )
 
+    history_context = "\n".join(
+        [
+            f"Q: {item['question']}\nA: {item['answer']}"
+            for item in chat_history[-5:]
+        ]
+    )
+
     full_context = f"""
+CONVERSATION HISTORY
+
+{history_context}
+
 VIDEO A (YOUTUBE)
 
 Metadata:
@@ -144,6 +160,13 @@ Context:
     answer = generate_rag_answer(
         data.question,
         full_context
+    )
+
+    chat_history.append(
+        {
+            "question": data.question,
+            "answer": answer
+        }
     )
 
     sources = []
@@ -174,6 +197,6 @@ Context:
 
     return {
         "answer": answer,
-        "sources": sources
+        "sources": sources,
+        "memory_size": len(chat_history)
     }
-
