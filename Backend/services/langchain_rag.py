@@ -45,3 +45,15 @@ def generate_rag_answer(question, context):
     )
 
     return response.content
+
+
+def stream_rag_answer(question, context):
+
+    for chunk in chain.stream(
+        {
+            "context": context,
+            "question": question
+        }
+    ):
+        if chunk.content:
+            yield chunk.content

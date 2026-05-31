@@ -1,25 +1,21 @@
-# Environment
+wherw we stopped 
 .env
 
-# Python
+
 __pycache__/
 *.pyc
 
-# Qdrant persistent storage
+
 qdrant_data/
 
-# Temporary media
 *.mp4
 *.wav
 *.mp3
 
-# Frontend
-frontend/node_modules/
-frontend/dist/
 
-# VS Code
+
+
 .vscode/
 
-# OS files
 .DS_Store
 Thumbs.db

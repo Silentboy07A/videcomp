@@ -48,8 +48,7 @@ def get_client() -> QdrantClient:
         logger.info("[QDRANT] Connected successfully")
 
     except RuntimeError as e:
-        # qdrant_local.py raises RuntimeError when the
-        # .lock file is held by another process.
+        
         if "already accessed" in str(e):
             logger.warning(
                 "[QDRANT] Lock contention detected — "
@@ -59,8 +58,7 @@ def get_client() -> QdrantClient:
         else:
             raise
 
-    # Ensure the client is closed cleanly on process exit
-    # so the .lock file is released.
+    
     atexit.register(_shutdown_client)
 
     return _client
