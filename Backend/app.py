@@ -273,8 +273,18 @@ Context:
             }
         )
 
-    return {
+        return {
         "answer": answer,
         "sources": sources,
+        "memory_size": len(chat_history)
+    }
+
+
+@app.get("/health")
+def health():
+
+    return {
+        "status": "healthy",
+        "vector_db": "connected",
         "memory_size": len(chat_history)
     }
