@@ -13,6 +13,9 @@ def get_instagram_metadata(url):
             download=False
         )
 
+    print("\nINSTAGRAM METADATA KEYS:")
+    print(info.keys())
+
     views = info.get("view_count") or 0
     likes = info.get("like_count") or 0
     comments = info.get("comment_count") or 0
