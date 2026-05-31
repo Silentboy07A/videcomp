@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+langchain
+langchain-core
+langchain-groq
+sentence-transformers
+qdrant-client
+python-dotenv
+youtube-transcript-api
+google-api-python-client
+yt-dlp
+openai-whisper
+torch
+pydantic
